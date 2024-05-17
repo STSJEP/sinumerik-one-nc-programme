@@ -1,0 +1,4 @@
+WHILE waitDataMoved == 0
+MSG("Warten auf PLC")
+ENDWHILE
+M30

@@ -1,0 +1,62 @@
+;Job 100 für Palette holen
+def Real holenAbstand 
+holenAbstand = R1
+MSG("JOB 100 holen aktiv")
+activJOB = 100
+
+fehlerZAchse:
+    MSG("Z-ACHSE NICHT IN GST")
+
+; Z-Achse muss in gst sein
+IF  $AA_IM[Z] > zGST + 1
+    gotob fehlerZAchse  
+    M30
+ENDIF
+
+; B-Achsen indexierung auf GST 
+CALL "B_ACHSE_INDEXIEREN_GST"
+
+; Y- und B-Achse vorpositionieren
+G1 POS[B]=BPOS POSA[Y]=YPOS-holenAbstand FA[b]=bSpeedWithoutPallet FA[y]=ySpeedWithoutPallet;*override
+
+; B-Achse indexieren
+CALL "B_ACHSE_INDEXIEREN_AST"
+
+; warten bis Y-Achse auf Zielpositin ist (POSA[Y])
+WAITP
+
+; Z-Achse ausfahren
+G1 POS[Z]=ZPOS FA[Z]=zSpeedWithoutPallet
+
+;Lader-Pumpe / Abblasen 
+M73
+
+; Palette anheben
+G1 POS[Y]=YPOS+HUB FA[Y]=ySpeedWithPallet*0.03
+
+; Paletten daten auf Lader umschreiben über plc zu ipc, ipc muss bestätigen
+moveData=1
+
+; Warten bis Laderpumpe fertig
+CALL "LADERPUMPE"
+
+; warten bis moveData von IPC bestätigt wurde
+CALL "WARTEN"
+
+; Z-Achse in GST fahren
+G1 POSA[Z]=zGST FA[Z]=zSpeedWithPallet
+
+;warteAufZAchse:
+ID=1 every $AA_IM[Z] < 500.0 DO M71
+;    gotob warteAufZAchse
+;ENDIF
+stopre
+; B-Achsen indexierung auf GST
+WAITP
+CALL "B_ACHSE_INDEXIEREN_GST"
+cancel(1)
+WAITP
+jobDone = 1
+MSG("JOB 100 durchgeführt")
+stopre
+M17

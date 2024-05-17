@@ -1,0 +1,81 @@
+; Job 200 für Palette bringen
+def Real sensorAbstand 
+def Real holenAbstand
+sensorAbstand = R2
+holenAbstand = R1
+activJOB = 200
+MSG("JOB 200 bringen aktiv")
+
+
+fehlerZAchse:
+    MSG("Z-ACHSE NICHT IN GST")
+
+; Z-Achse muss in gst sein
+IF  $AA_IM[Z] > zGST + 1
+    gotob fehlerZAchse  
+    M30
+ENDIF
+
+; B-Achsen indexierung lösen
+CALL "B_ACHSE_INDEXIEREN_GST"
+
+
+; B-Achsen indexierung auf GST 
+CALL "B_ACHSE_INDEXIEREN_GST"
+
+; Laser einschalten
+$A_OUT[1]=0
+
+; Y- und B-Achse vorpositionieren
+G1 POS[B]=BPOS POSA[Y]=YPOS FA[b]=bSpeedWithPallet FA[y]=ySpeedWithPallet
+
+; B-Achse indexieren
+M70
+
+; z achse vorpositionieren, damit der sensor die palette erkennen kann
+G1 POS[Z]=ZPOS-930 FA[Z]=zSpeedWithPallet
+
+; warten bis Y-Achse auf Zielposition ist (POSA[Y])
+WAITP
+CALL "CHECKPOSITION"
+
+; Palette hochfahren um ablegen zu können
+G1 POSA[Y]=YPOS+HUB FA[Y]=ySpeedWithPallet
+
+CALL "B_ACHSE_INDEXIEREN_AST"
+
+; Z-Achse ausfahren
+G1 POS[Z]=ZPOS FA[Z]=zSpeedWithPallet;*override
+
+; Laderpumpe / Abblasen
+M73
+
+; Y-Achse ablegen -> geteachte position -hub
+G1 POS[Y]=YPOS-holenAbstand FA[Y]=ySpeedWithPallet*0.03;*override
+
+; Paletten-Daten umschreiben über plc zu ipc von dort rückmeldung "data_moved"
+moveData=1
+CALL "WARTEN"
+
+; Warten bis Laderpumpe fertig
+CALL "LADERPUMPE"
+
+; Z-Achse in GST fahren
+G1 POSA[Z]=zGST FA[Z]=zSpeedWithoutPallet
+
+;warteAufZAchse:
+;stopre
+ID=1 EVERY $AA_IM[Z] < 500.0 DO M71
+;    gotob warteAufZAchse
+;ENDIF
+stopre
+; B-Achsen indexierung auf GST
+WAITP
+CALL "B_ACHSE_INDEXIEREN_GST"
+cancel(1)
+WAITP
+jobDone = 1
+MSG("")
+stopre
+M30
+

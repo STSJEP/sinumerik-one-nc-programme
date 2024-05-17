@@ -1,0 +1,15 @@
+MSG("GRUNDSTELLUNG")
+activJob = 1000
+
+$A_OUT[1]=1 ;Laser ausschalten
+
+; B-Achsen indexierung auf GST
+CALL "B_ACHSE_INDEXIEREN_GST"
+
+; Y-Achse anheben mit Palette oder unter Palette rausfahren
+G1 POS[Y]=YPOS FA[Y]=ySpeedWithPallet
+
+; Z-Achse auf GST
+G1 POS[Z]=zGST FA[Z]=zSpeedWithPallet
+
+M17

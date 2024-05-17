@@ -1,0 +1,25 @@
+WHILE (HLT_nachTaktende == 0)
+MSG("JOBNR " << JOBNR)
+$A_OUT[1]=1 ;Laser ausschalten
+
+Sema_Jobdata=0 ;schalte semaphore empfangsbereit
+receive: 
+if Sema_Jobdata==1 gotof execute_job ;wenn Daten vorliegen, kann der Auftrag beginnen.
+gotob receive
+execute_job:
+CASE (JOBNR) OF 100 GOTO JOB100 200 GOTO JOB200 300 GOTO JOB300 1000 GOTO GRUNDSTELLUNG DEFAULT GOTO END
+JOB100: CALL "JOB100"
+GOTO END
+JOB200: CALL "JOB200"
+GOTO END
+JOB300: CALL "JOB300"
+GOTO END
+GRUNDSTELLUNG: CALL "GRUNDSTELLUNG"
+RET
+END: 
+stopre
+
+JOBNR=0 jobDone=0 activJOB=0 moveData=0 ;MSG("END")
+
+ENDWHILE
+M30

@@ -1,0 +1,11 @@
+M71
+
+warteAufIndexieren:
+    MSG("Warte auf indexieren")
+
+IF bAchsenIndexierungInGst <> TRUE
+    gotob warteAufIndexieren
+ENDIF
+    MSG("")
+
+M17

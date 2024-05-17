@@ -1,0 +1,5 @@
+MSG("HELLO WORLD!")
+
+G4 F10
+
+M30

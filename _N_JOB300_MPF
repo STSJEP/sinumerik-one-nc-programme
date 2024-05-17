@@ -1,0 +1,15 @@
+MSG("JOB 300")
+;G4 F1
+CALL "JOB100"
+jobDone=0 activJOB=0 activJOB=0 moveData=0 
+Sema_Jobdata=0 ;schalte semaphore empfangsbereit
+receive: 
+if Sema_Jobdata==1 gotof execute_job ;wenn Daten vorliegen, kann der Auftrag beginnen.
+gotob receive
+execute_job:
+
+CALL "JOB200"
+stopre
+
+MSG("")
+M30
