@@ -36,8 +36,6 @@ G1 POS[Y]=YPOS+HUB FA[Y]=ySpeedWithPallet*0.03
 
 ; Paletten daten auf Lader umschreiben über plc zu ipc, ipc muss bestätigen
 moveData=1
-
-; warten bis moveData von IPC bestätigt wurde
 CALL "WARTEN"
 moveData=0
 
