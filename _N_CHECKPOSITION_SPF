@@ -1,9 +1,9 @@
 
 IF $A_IN[4]==1
-    ;$A_OUT[1]=1 ;Laser ausschalten
+    $A_OUT[1]=1 ;Laser ausschalten
     M17
 ELSE
-    ;$A_OUT[1]=1 ;Laser ausschalten
+    $A_OUT[1]=1 ;Laser ausschalten
     M72
     fehler:
     MSG("Ziel Platz schon belegt")
