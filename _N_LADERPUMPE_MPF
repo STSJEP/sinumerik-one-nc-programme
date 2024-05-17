@@ -1,4 +1,4 @@
-; M-Funktion: 72 - wird aufgerufen wenn Z-achse ausgefahren wurde
+; M-Funktion: 73 - wird aufgerufen wenn Z-achse ausgefahren wurde
 ; nach y-Achsen hub wird dieses Programm aufgerufen um zu warten bis pumpen fertig
 
 warteAufPumpe:
