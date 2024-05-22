@@ -1,5 +1,5 @@
 M70
-
+;test
 warteAufIndexieren:
     MSG("Warte auf indexieren")
 
